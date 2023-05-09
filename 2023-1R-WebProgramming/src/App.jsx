@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -10,20 +10,52 @@ import './App.css'
 // App()함수가 실행되면 (전체 html을 다 지우고 다시 작성) JSX를 반환하고, JSX는 React.createElement() 함수를 호출하는 코드로 변환된다.
 // React.createElement() 함수는 Virtual DOM을 생성한다.
 function App() {
-  // const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0)
 
   const [row, setRow] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    console.log('mount or update');
+    return () => {
+      console.log('unmount');
+    };
+  });
 
-  if (row.length == 0 && loading == true) {
-    const res = fetch("http://openapi.seoul.go.kr:8088/6846755559636a6a3931674d444c55/json/RealtimeCityAir/1/25/").then(
-      function (res2) {
-        res2.json().then(function (res3) {
-          setRow(res3.RealtimeCityAir.row);
-        })
-      })
-  }
+  useEffect(() => { //현재 기준으로는 mount or update가 2번 실행됨
+    console.log('mount or update');
+    if (loading) {
+      console.log('loading');
+      fetch("http://openapi.seoul.go.kr:8088/6846755559636a6a3931674d444c55/json/RealtimeCityAir/1/25/").then(
+        function (res2) {
+          res2.json().then(function (res3) {
+            setRow(res3.RealtimeCityAir.row);
+          })
+        }
+      )
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    console.log('update only', row);
+  }, [row]);
+
+  useEffect(() => {
+    document.title = `you clicked ${count} times`;
+
+    return () => {
+      document.title = "Vite + React";
+    }
+  });
+
+  // if (row.length == 0 && loading == true) {
+  //   const res = fetch("http://openapi.seoul.go.kr:8088/6846755559636a6a3931674d444c55/json/RealtimeCityAir/1/25/").then(
+  //     function (res2) {
+  //       res2.json().then(function (res3) {
+  //         setRow(res3.RealtimeCityAir.row);
+  //       })
+  //     })
+  // }
 
   console.log(row)
   console.log(loading)
@@ -42,7 +74,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <button onClick={() => setLoading((loading) => true)}>
-        Loading..
+        데이터 로딩하기
       </button>
       <table>
         <thead>
@@ -54,27 +86,38 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {row.map(function (obj) {
-            return (
-              <tr>
-                <td>{obj.MSRSTE_NM}</td>
-                <td>{obj.PM10}</td>
-                <td>{obj.O3}</td>
-                <td>{obj.IDEX_NM}</td>
-              </tr>
-            )
-          })
+          { //중괄호는 안의 내용이 javascript의 영역임을 표시하는 것
+            // row.map(function (obj) {
+            //   return (
+            //     <tr>
+            //       <td>{obj.MSRSTE_NM}</td>
+            //       <td>{obj.PM10}</td>
+            //       <td>{obj.O3}</td>
+            //       <td>{obj.IDEX_NM}</td>
+            //     </tr>
+            //   )
+            // })
+            row.map((gu, index) => {
+              return (
+                <tr key={index}>
+                  <td>{gu.MSRSTE_NM}</td>
+                  <td>{gu.PM10}</td>
+                  <td>{gu.O3}</td>
+                  <td>{gu.IDEX_NM}</td>
+                </tr>
+              )
+            })
           }
         </tbody>
       </table>
-      {/* <div className="card">
+      <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
-      </div> */}
+      </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
