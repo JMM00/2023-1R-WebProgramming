@@ -4,3 +4,55 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
+.description {
+  color: white;
+  font-size: 18px;
+  width: 80%;
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.name {
+  color: white;
+  font-size: 24px;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 80%;
+  text-align: center;
+}
+
+.content {
+  transition: transform 1s, opacity 0.5s;
+}
+
+.content-selected-left {
+  transform: translateX(50%) scale(1.2);
+}
+
+.content-selected-right {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.content-opaque {
+  opacity: 0;
+}
+
+.relative-div{
+  position: relative;
+}
+
+#content {
+  display: flex;
+  flex-direction: row;
+}
+
+#info {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
