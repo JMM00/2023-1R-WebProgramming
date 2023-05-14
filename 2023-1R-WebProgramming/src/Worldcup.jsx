@@ -64,7 +64,7 @@ function Worldcup() {
 
   if (game.length === 1) {
     return <div>
-      <p>이상형 월드컵 우승</p>
+      <p>Apex 레전드 월드컵 우승</p>
       <img src={game[0].src} /> <p> {game[0].name}</p>
       <p>최종 우승자는 {game[0].name}입니다.</p>
     </div>
@@ -73,7 +73,7 @@ function Worldcup() {
   if (game.length === 0 || round + 1 > game.length / 2) return <p>로딩중...</p>;
 
   return <>
-    <p>에이펙스 레전드 월드컵 {round + 1} / {game.length / 2} <b>{game.length == 2 ? "결승" : game.length + "강"}</b> </p>
+    <p>Apex 레전드 월드컵 {round + 1} / {game.length / 2} <b>{game.length == 2 ? "결승" : game.length + "강"}</b> </p>
 
     <div id="content">
 
