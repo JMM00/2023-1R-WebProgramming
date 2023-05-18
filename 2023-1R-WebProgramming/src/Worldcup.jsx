@@ -42,8 +42,31 @@ function Worldcup() {
   const [round, setRound] = useState(0);
   const [nextGame, setNextGame] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [stat, setStat] = useState({
+    '방갈로르': 0,
+    '블러드하운드': 0,
+    '코스틱': 0,
+    '크립토': 0,
+    '퓨즈': 0,
+    '지브롤터': 0,
+    '라이프라인': 0,
+    '로바': 0,
+    '미라지': 0,
+    '옥테인': 0,
+    '패스파인더': 0,
+    '램파트': 0,
+    '랩소디': 0,
+    '발키리': 0,
+    '왓슨': 0,
+    '레이스': 0
+  });
 
+  //처음 월드컵 컴포넌트가 단 한 번 실행하는 함수
   useEffect(() => {
+    const stringState = localStorage.getItem('레전드');
+    if (stringState != null) {
+      setStat(JSON.parse(stringState));
+    }
     setGame(candidate.map(c => {
       return { name: c.name, src: c.src, order: Math.random(), description: c.description }
     }).sort((l, r) => {
@@ -63,61 +86,85 @@ function Worldcup() {
   // {/* <img src={game[0].src} onClick={() => alert('방갈로르')} />  그냥 이렇게 넣으면 오류남*/}
 
   if (game.length === 1) {
+    localStorage.setItem('레전드', JSON.stringify(stat));
     return <div>
       <p>Apex 레전드 월드컵 우승</p>
-      <img src={game[0].src} /> <p> {game[0].name}</p>
+      <img src={game[0].src} /> <p> {game[0].name}</p> <p>{stat[game[0].name]}번 승리</p>
       <p>최종 우승자는 {game[0].name}입니다.</p>
+
+      <table>
+        <thead>
+          <tr>이름</tr> <tr>이긴 횟수</tr>
+        </thead>
+        <tbody>
+          {Object.keys(stat).map(name => {
+            return <tr key={name}>
+              <td>{name}</td>
+              <td>{stat[name]}</td>
+            </tr>;
+          })}
+        </tbody>
+      </table>
     </div>
 
   }
   if (game.length === 0 || round + 1 > game.length / 2) return <p>로딩중...</p>;
 
+  const left = round * 2, right = round * 2 + 1;
+  console.log(stat);
+
+  const leftFunction = () => {
+    setStat({ ...stat, [game[left].name]: stat[game[left].name] + 1 })
+    setSelectedImage(game[left].src);
+    setTimeout(() => {
+      // alert(game[left].name + "이 선택되었습니다.")
+      setNextGame((prev) => prev.concat(game[left]));
+      setRound((rount) => rount + 1);
+      setSelectedImage(null);
+    }, 1000);
+  }
+  const rightFunction = () => {
+    setStat({ ...stat, [game[right].name]: stat[game[right].name] + 1 })
+    setSelectedImage(game[right].src);
+    setTimeout(() => {
+      // alert(game[right].name + "이 선택되었습니다.")
+      setNextGame((prev) => prev.concat(game[right]));
+      setRound((rount) => rount + 1);
+      setSelectedImage(null);
+    }, 1000);
+  }
   return <>
     <p>Apex 레전드 월드컵 {round + 1} / {game.length / 2} <b>{game.length == 2 ? "결승" : game.length + "강"}</b> </p>
 
     <div id="content">
 
-      <div class="relative-div">
-        <img src={game[round * 2].src} onClick={() => {
-          setSelectedImage(game[round * 2].src);
-          setTimeout(() => {
-            setNextGame((prev) => prev.concat(game[round * 2]));
-            setRound((rount) => rount + 1);
-            setSelectedImage(null);
-          }, 3000);
-        }}
-          class={`content ${selectedImage === game[round * 2].src ? "content-selected-left" : ""
-            } ${selectedImage === game[round * 2 + 1].src ? "content-opaque" : ""}`}
+      <div className="relative-div">
+        <img src={game[left].src} onClick={leftFunction}
+          className={`content ${selectedImage === game[left].src ? "content-selected-left" : ""
+            } ${selectedImage === game[right].src ? "content-opaque" : ""}`}
         />
-        <div id="info" class={`content ${selectedImage === game[round * 2].src ? "content-selected-left" : ""
-            } ${selectedImage === game[round * 2 + 1].src ? "content-opaque" : ""}`}>
-          <span class="name">
-            {game[round * 2].name}
+        <div id="info" className={`content ${selectedImage === game[left].src ? "content-selected-left" : ""
+          } ${selectedImage === game[right].src ? "content-opaque" : ""}`}>
+          <span className="name">
+            {game[left].name}
           </span>
-          <span class="description">
+          <span className="description">
             {game[round * 2].description}
           </span>
         </div>
       </div>
-      <div class="relative-div">
-        <img src={game[round * 2 + 1].src} onClick={() => {
-          setSelectedImage(game[round * 2 + 1].src);
-          setTimeout(() => {
-            setNextGame((prev) => prev.concat(game[round * 2 + 1]));
-            setRound((rount) => rount + 1);
-            setSelectedImage(null);
-          }, 3000);
-        }}
-          class={`content ${selectedImage === game[round * 2+1].src ? "content-selected-right" : ""
-            } ${selectedImage === game[round * 2].src ? "content-opaque" : ""}`}
+      <div className="relative-div">
+        <img src={game[right].src} onClick={rightFunction}
+          className={`content ${selectedImage === game[right].src ? "content-selected-right" : ""
+            } ${selectedImage === game[left].src ? "content-opaque" : ""}`}
         />
-        <div id="info" class={`content ${selectedImage === game[round * 2+1].src ? "content-selected-right" : ""
-            } ${selectedImage === game[round * 2].src ? "content-opaque" : ""}`}>
-          <span class="name">
-            {game[round * 2 + 1].name}
+        <div id="info" className={`content ${selectedImage === game[right].src ? "content-selected-right" : ""
+          } ${selectedImage === game[left].src ? "content-opaque" : ""}`}>
+          <span className="name">
+            {game[right].name}
           </span>
-          <span class="description">
-            {game[round * 2 + 1].description}
+          <span className="description">
+            {game[right].description}
           </span>
         </div>
       </div>
