@@ -63,7 +63,7 @@ function Worldcup() {
 
   //처음 월드컵 컴포넌트가 단 한 번 실행하는 함수
   useEffect(() => {
-    const stringState = localStorage.getItem('레전드');
+    const stringState = localStorage.getItem('2019113625');
     if (stringState != null) {
       setStat(JSON.parse(stringState));
     }
@@ -86,7 +86,7 @@ function Worldcup() {
   // {/* <img src={game[0].src} onClick={() => alert('방갈로르')} />  그냥 이렇게 넣으면 오류남*/}
 
   if (game.length === 1) {
-    localStorage.setItem('레전드', JSON.stringify(stat));
+    localStorage.setItem('2019113625', JSON.stringify(stat));
     return <div>
       <p>Apex 레전드 월드컵 우승</p>
       <img src={game[0].src} /> <p> {game[0].name}</p> <p>{stat[game[0].name]}번 승리</p>
@@ -94,7 +94,9 @@ function Worldcup() {
 
       <table>
         <thead>
-          <tr>이름</tr> <tr>이긴 횟수</tr>
+          <tr>
+            <th>이름</th> <th>이긴 횟수</th>
+          </tr>
         </thead>
         <tbody>
           {Object.keys(stat).map(name => {
